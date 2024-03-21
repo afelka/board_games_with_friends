@@ -15,9 +15,10 @@ library(ggimage)
 library(jpeg)
 library(png)
 
+# read excel file's categories sheet
 board_games_bgg <- read_excel("BoardGames.xlsx", sheet = "Categories")
 
-## Get image from a boardgamegeek link # 
+## Get image from a boardgamegeek link if it wasn't already gotten before # 
 
 for (i in 1:nrow(board_games_bgg)) {
 
@@ -54,12 +55,16 @@ board_games_bgg$image_name[i] <- image_name
 
 }
 
+# create smaller dataframe fro images
 board_games_image <- board_games_bgg %>% select(Name, image_name)
 
+# read Games sheet from excel
 board_games <- read_excel("BoardGames.xlsx", sheet = "Games")
 
+# combine with images
 board_games <- board_games %>% left_join(board_games_image, by = c("Game" = "Name"))
 
+# create a dataset where Erdem was one of the players and define winners 
 games_with_erdem <- board_games %>% filter(Group != "JELTO" & 
                                     Group != "ELTO"  &  
                                     Group != "ELO"  &
@@ -96,6 +101,7 @@ games_with_erdem <- board_games %>% filter(Group != "JELTO" &
              )
              )
 
+# assign colours to winners
 games_with_erdem$winner <- as.factor(games_with_erdem$winner)
 colourCount <- length(unique(games_with_erdem$winner))
 getPalette <- colorRampPalette(brewer.pal(9, "Paired"))
@@ -103,6 +109,7 @@ getPalette <- colorRampPalette(brewer.pal(9, "Paired"))
 myColors <- getPalette(colourCount)
 names(myColors) <- levels(games_with_erdem$winner)
 
+#create winning numbers (not used in ggplot later, only for stats)
 games_with_erdem_wins <- games_with_erdem %>% 
   select(Group,Date,Game,Erdem,Lasse,Torben,
          Jakob,Soren,Henrik,
@@ -121,7 +128,7 @@ games_with_erdem_wins <- games_with_erdem %>%
   ungroup() %>% arrange(desc(TotalWins),desc(WinPercentage))
 
 
-
+# create labels with images
 games_with_erdem_games_labels <- games_with_erdem %>% group_by(Game, image_name) %>% 
                                  summarise(played_count = max(played_count)) %>% 
                                  select(Game,played_count, image_name) %>% arrange(played_count, Game)
@@ -129,7 +136,7 @@ games_with_erdem_games_labels <- games_with_erdem %>% group_by(Game, image_name)
 labels_for_y <- c(paste0(games_with_erdem_games_labels$Game, ": <img src='",games_with_erdem_games_labels$image_name,"'/>"))
 
 
-
+# create ggplot 
 p1 <- ggplot(data = games_with_erdem, aes(x=played_count, y=Game)) + 
     aes(y=reorder(Game,played_count)) + 
     geom_tile(aes(fill=winner), color = "black"  ) + geom_text(aes(label = winner)) + 
@@ -147,8 +154,6 @@ p1 <- ggplot(data = games_with_erdem, aes(x=played_count, y=Game)) +
 png("board_games_with_erdem.png")
 print(p1)
 dev.off()
-
-labels_for_y_without_images <- games_with_erdem_games_labels$Game
 
 # Create a new column 'shape' in the dataset using the 'No_of_players' column
 games_with_erdem <- games_with_erdem %>%
