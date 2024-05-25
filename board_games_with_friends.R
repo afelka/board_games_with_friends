@@ -176,6 +176,8 @@ p2 <- ggplot(data = games_with_erdem, aes(x = played_count, y = Game)) +
   labs(y = "Game", x = "Time Played") + 
   theme(panel.background = element_rect(fill = NA, color = "black"))
 
-png("board_games_with_erdem2.png")
+png_name2 <- paste0("board_games_with_erdem2_", sub("-", "_", Sys.Date()),".png")
+
+png(png_name2)
 print(p2)
 dev.off()
