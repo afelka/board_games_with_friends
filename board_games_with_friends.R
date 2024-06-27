@@ -78,7 +78,7 @@ games_with_erdem <- board_games %>% filter(Group != "JELTO" &
              mutate(played_count=rank(rank)
                    ) %>% ungroup() %>%
              select(Group,Date,Game,Erdem,Lasse,Torben,
-                    Jakob,Henrik,Soren,
+                    Jakob,Henrik,Soren,Marcin,
                     played_count,rank,BGG_Weight, image_name, No_of_players) %>% 
              #define letters for different winner combinations
              mutate(winner = case_when(
@@ -97,6 +97,7 @@ games_with_erdem <- board_games %>% filter(Group != "JELTO" &
                Lasse == 1 ~ "L",
                Torben == 1 ~ "T",
                Henrik == 1 ~ "H",
+               Marcin == 1 ~ "M",
                TRUE ~ "N"
              )
              )
@@ -112,10 +113,10 @@ names(myColors) <- levels(games_with_erdem$winner)
 #create winning numbers (not used in ggplot later, only for stats)
 games_with_erdem_wins <- games_with_erdem %>% 
   select(Group,Date,Game,Erdem,Lasse,Torben,
-         Jakob,Soren,Henrik,
+         Jakob,Henrik,Soren,Marcin,
          BGG_Weight) %>% pivot_longer(
   cols = c("Erdem","Torben","Lasse"
-           ,"Jakob","Henrik","Soren"
+           ,"Jakob","Henrik","Soren","Marcin"
            ),
   names_to = "Player",
   values_to = "Place"
