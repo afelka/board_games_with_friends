@@ -179,6 +179,6 @@ p2 <- ggplot(data = games_with_erdem, aes(x = played_count, y = Game)) +
 
 png_name2 <- paste0("board_games_with_erdem2_", sub("-", "_", Sys.Date()),".png")
 
-png(png_name2)
+png(filename = png_name2, width = 1000, height = 1800, res = 120)
 print(p2)
 dev.off()
