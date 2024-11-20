@@ -136,27 +136,6 @@ games_with_erdem_games_labels <- games_with_erdem %>% group_by(Game, image_name)
 
 labels_for_y <- c(paste0(games_with_erdem_games_labels$Game, ": <img src='",games_with_erdem_games_labels$image_name,"'/>"))
 
-
-# create ggplot 
-p1 <- ggplot(data = games_with_erdem, aes(x=played_count, y=Game)) + 
-    aes(y=reorder(Game,played_count)) + 
-    geom_tile(aes(fill=winner), color = "black"  ) + geom_text(aes(label = winner)) + 
-    scale_fill_manual(name= "winner", values = myColors) +
-    theme_classic() + 
-    scale_x_continuous(breaks = seq(1, max(games_with_erdem$played_count), 1),position = "top",
-                     labels = scales::ordinal_format()) + 
-    scale_y_discrete(name = NULL, 
-    labels = labels_for_y) +
-    theme(axis.text.y = ggtext::element_markdown()) +
-    labs( y = "Game", x = "Time Played") + 
-    theme(panel.background = element_rect(fill = NA, color = "black")) 
-
-png_name <- paste0("board_games_with_erdem_", sub("-", "_", Sys.Date()),".png")
-
-png(png_name)
-print(p1)
-dev.off()
-
 # Create a new column 'shape' in the dataset using the 'No_of_players' column
 games_with_erdem <- games_with_erdem %>%
   mutate(shape = if_else(No_of_players == 3, 24,
@@ -165,7 +144,7 @@ games_with_erdem <- games_with_erdem %>%
   mutate(shape = factor(shape, levels = c("24", "22", "21")))
 
 # Use the 'shape' column in the shape aesthetic within geom_point to differentiate shape based on no_of_players
-p2 <- ggplot(data = games_with_erdem, aes(x = played_count, y = Game)) + 
+p1 <- ggplot(data = games_with_erdem, aes(x = played_count, y = Game)) + 
   aes(y = reorder(Game, played_count)) + 
   geom_point(aes(fill = winner, shape = shape), color = "black", size = 8, show.legend = c(fill = FALSE, shape = TRUE)) + 
   geom_text(aes(label = winner)) + 
@@ -184,8 +163,8 @@ p2 <- ggplot(data = games_with_erdem, aes(x = played_count, y = Game)) +
   theme(panel.background = element_rect(fill = NA, color = "black")) +
   theme(legend.position = c(0.8, 0.8))
 
-png_name2 <- paste0("board_games_with_erdem2_", sub("-", "_", Sys.Date()),".png")
+png_name <- paste0("board_games_with_erdem2_", sub("-", "_", Sys.Date()),".png")
 
-png(filename = png_name2, width = 1000, height = 1800, res = 120)
-print(p2)
+png(filename = png_name, width = 1000, height = 1800, res = 120)
+print(p1)
 dev.off()
