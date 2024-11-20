@@ -65,12 +65,9 @@ board_games <- read_excel("BoardGames.xlsx", sheet = "Games")
 board_games <- board_games %>% left_join(board_games_image, by = c("Game" = "Name"))
 
 # create a dataset where Erdem was one of the players and define winners 
-games_with_erdem <- board_games %>% filter(Group != "JELTO" & 
-                                    Group != "ELTO"  &  
-                                    Group != "ELO"  &
-                                    Group != "ET"  &
-                                    str_detect(Group, "E") &
-                                    Type == "Competitive") %>%
+games_with_erdem <- board_games %>% filter(str_detect(Group, "E") &
+                                    Type == "Competitive" & 
+                                    No_of_players >= 3) %>%
              mutate(rank = row_number(),
                     Game = paste0(Game," (",BGG_Weight,")")) %>%
              group_by(Game) %>%
@@ -98,7 +95,7 @@ games_with_erdem <- board_games %>% filter(Group != "JELTO" &
                Torben == 1 ~ "T",
                Henrik == 1 ~ "H",
                Marcin == 1 ~ "M",
-               TRUE ~ "N"
+               TRUE ~ "O"
              )
              )
 
