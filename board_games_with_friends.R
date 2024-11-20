@@ -55,7 +55,7 @@ board_games_bgg$image_name[i] <- image_name
 
 }
 
-# create smaller dataframe fro images
+# create smaller dataframe for images
 board_games_image <- board_games_bgg %>% select(Name, image_name)
 
 # read Games sheet from excel
