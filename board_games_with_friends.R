@@ -161,21 +161,28 @@ dev.off()
 games_with_erdem <- games_with_erdem %>%
   mutate(shape = if_else(No_of_players == 3, 24,
                          if_else(No_of_players == 4, 22,
-                                 if_else(No_of_players == 5, 21, 1))))
+                                 if_else(No_of_players == 5, 21, 1)))) %>%
+  mutate(shape = factor(shape, levels = c("24", "22", "21")))
 
 # Use the 'shape' column in the shape aesthetic within geom_point to differentiate shape based on no_of_players
 p2 <- ggplot(data = games_with_erdem, aes(x = played_count, y = Game)) + 
   aes(y = reorder(Game, played_count)) + 
-  geom_point(aes( fill = winner), shape = games_with_erdem$shape, color = "black", size = 8, show.legend = FALSE) + 
+  geom_point(aes(fill = winner, shape = shape), color = "black", size = 8, show.legend = c(fill = FALSE, shape = TRUE)) + 
   geom_text(aes(label = winner)) + 
   scale_fill_manual(name = "Winner", values = myColors) +
+  scale_shape_manual(
+    name = "No. of Players",
+    values = c("24" = 24, "22" = 22, "21" = 21), # Map factor levels to shape codes
+    labels = c("3 Players", "4 Players", "5 Players", "Other") # Custom legend labels
+  ) +
   theme_classic() + 
   scale_x_continuous(breaks = seq(1, max(games_with_erdem$played_count), 1), position = "top",
                      labels = scales::ordinal_format()) + 
   scale_y_discrete(name = NULL, labels = labels_for_y) +
   theme(axis.text.y = ggtext::element_markdown()) +
   labs(y = "Game", x = "Time Played") + 
-  theme(panel.background = element_rect(fill = NA, color = "black"))
+  theme(panel.background = element_rect(fill = NA, color = "black")) +
+  theme(legend.position = c(0.8, 0.8))
 
 png_name2 <- paste0("board_games_with_erdem2_", sub("-", "_", Sys.Date()),".png")
 

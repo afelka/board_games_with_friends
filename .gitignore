@@ -5,3 +5,4 @@
 *.jpg
 *.html
 *.png
+!/images/*.png
