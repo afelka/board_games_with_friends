@@ -160,7 +160,7 @@ p1 <- ggplot(data = games_with_erdem, aes(x = played_count, y = Game)) +
   theme(panel.background = element_rect(fill = NA, color = "black")) +
   theme(legend.position = c(0.8, 0.8))
 
-png_name <- paste0("board_games_with_erdem2_", sub("-", "_", Sys.Date()),".png")
+png_name <- paste0("board_games_with_erdem_", sub("-", "_", Sys.Date()),".png")
 
 png(filename = png_name, width = 1000, height = 2000, res = 120)
 print(p1)
